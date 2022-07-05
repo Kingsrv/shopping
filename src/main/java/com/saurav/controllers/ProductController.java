@@ -3,11 +3,9 @@ package com.saurav.controllers;
 import com.saurav.models.Product;
 import com.saurav.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,9 +16,12 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @RequestMapping(value = "/create-product",method = RequestMethod.POST)
-    public Product createProduct(@RequestBody Product product){
-//
+    List<Product> list = new ArrayList<>();
+
+    //create a product
+    @RequestMapping(value = "/create-product", method = RequestMethod.POST)
+    public Product createProduct(@RequestBody Product product) {
+
 //        Product prod = new Product();
 //        prod.setProductId(1234);
 //        prod.setProductName("iphone");
@@ -32,10 +33,32 @@ public class ProductController {
         return createdProduct;
     }
 
+    //list all products
     @RequestMapping(value = "/list-product", method = RequestMethod.GET)
-    public List<Product> listAllProducts(){
+    public List<Product> listAllProducts() {
 
         List<Product> allProducts = productService.getAllProducts();
         return allProducts;
+    }
+
+    //update a product
+    @RequestMapping(value = "/update-product/{productId}", method = RequestMethod.PUT)
+    public Product updateProduct(@PathVariable int productId, @RequestBody Product newProduct) {
+        Product updatedProduct = productService.updateProduct(newProduct, productId);
+        return updatedProduct;
+    }
+
+    //delete a product
+    @RequestMapping(value = "/delete-product/{productId}", method = RequestMethod.DELETE)
+    public String deleteProduct(@PathVariable int productId) {
+        productService.deleteProduct(productId);
+        return "Product dleted successfully";
+    }
+
+    //get a product
+    @RequestMapping(value = "/get-product/{productId}", method = RequestMethod.GET)
+    public Product getProduct(@PathVariable int productId) {
+        Product product = productService.getProduct(productId);
+        return product;
     }
 }
